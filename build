@@ -1,0 +1,25 @@
+#!/bin/bash
+if [ "$1" ]
+then
+    #generate app
+    nativefier $1 --single-instance --maximize -n Airsonic -i logo.png
+
+    #add shortcut to this app
+    main=airsonic*/resources/app/lib/main.js
+    nb=$(($(grep -n \'ready\' $main | cut -d: -f 1)+2))
+    sed -e "${nb}i require('./hotkeys.js')(mainWindow);" -i $main
+    cp hotkeys.js airsonic*/resources/app/lib/
+
+    #add desktop shortcut (for gnome only)
+    cp airsonic.desktop.template airsonic.desktop
+    cd airsonic-*
+    pwd=$(pwd)
+    cd ..
+    user=$(whoami)
+    echo $user
+    echo $pwd
+    sed -i "s@AS_PATH@${pwd}@g" airsonic.desktop
+    mv airsonic.desktop /home/$user/Bureau/
+else
+    echo "pass your airsonic adress as parameter, eg: http://airsonic.local"
+fi

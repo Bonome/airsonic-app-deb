@@ -9,7 +9,7 @@ module.exports = function(mw){
           var previous = function(){
               mw.webContents.executeJavaScript("parent.frames.playQueue.onPrevious();");
           };
-          globalShortcut.register('ctrl+shift+alt+end', playPause);
+          globalShortcut.register('ctrl+shift+super+end', playPause);
           globalShortcut.register('ctrl+shift+option+end', playPause);
           globalShortcut.register('ctrl+shift+insert', previous);
           globalShortcut.register('ctrl+shift+home', next);

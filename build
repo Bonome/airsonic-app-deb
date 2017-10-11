@@ -19,7 +19,7 @@ then
     echo $user
     echo $pwd
     sed -i "s@AS_PATH@${pwd}@g" airsonic.desktop
-    mv airsonic.desktop /home/$user/Bureau/
+    sudo mv airsonic.desktop /usr/share/applications/
 else
     echo "pass your airsonic adress as parameter, eg: http://airsonic.local"
 fi

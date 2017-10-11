@@ -1,6 +1,9 @@
 module.exports = function(mw){
           
           var globalShortcut = require('electron').globalShortcut;
+          var Menu = require('electron').Menu;
+          var Tray = require('electron').Tray;
+	  var path = require('path');
           var playPause = function(){
               mw.webContents.executeJavaScript("if(window.parent.frames.playQueue.document.querySelector('#audioPlayer').paused) {window.parent.frames.playQueue.document.querySelector('#audioPlayer').play();}else{window.parent.frames.playQueue.document.querySelector('#audioPlayer').pause();}");
           };
@@ -16,25 +19,29 @@ module.exports = function(mw){
           globalShortcut.register('ctrl+shift+home', next);
           
           var contextMenu = Menu.buildFromTemplate([
-
+                  {label: 'Airsonic'},
                   {label: 'Pause', click: function () {
-                          playPause();
-                      }},
-                  {label: 'Quit', click: function () {
-                          app.isQuiting = true;
-                          app.quit();
+                      playPause();
+                  }},
+          ]);
 
-                      }}
-              ]);
+          tray = new Tray(path.join(__dirname, '../../../../logo.png'));
+          tray.setToolTip('Airsonic');
+          tray.setContextMenu(contextMenu);
+          tray.on('click', () => {
+              mw.show();
+          });
+          tray.setHighlightMode('always');
+          mw.on('page-title-updated', function (e, title) {
+	      var contextMenu = Menu.buildFromTemplate([
+                  {label: title},
+                  {label: 'Play#Pause', click: function () {
+                      playPause();
+                  }},
+               ]);
+		  tray.setContextMenu(contextMenu);
 
-              tray = new Tray(path.join(__dirname, 'logo.png'));
-              tray.setToolTip('Airsonic');
-              tray.setContextMenu(contextMenu);
-              tray.on('click', () => {
-                  mainWindow.show();
-              });
-              tray.setHighlightMode('always');
-          mainWindow.on('page-title-updated', function (e, title) {
+	      Menu.setApplicationMenu(contextMenu);
               tray.setToolTip(title);
           });
 };
